@@ -20,11 +20,7 @@
         login.hidden = admin;
         painel.hidden = !admin;
 
-        var campo = elemento('loginAdmin');
         var senha = elemento('senhaAdmin');
-        if (campo && !campo.value) {
-            campo.value = nucleo.ADMIN_NOME;
-        }
         if (senha) {
             senha.value = '';
         }
@@ -51,15 +47,9 @@
         }
     }
 
-    function loginLocal(identidade, senha) {
-        var registro = identidade.trim().toLowerCase();
-        var nomeOk = registro === nucleo.ADMIN_NOME || registro === nucleo.ADMIN_EMAIL;
-        return nomeOk && senha === nucleo.ADMIN_SENHA;
-    }
-
     function entrar(identidade, senha) {
         var url = (nucleo.base ? nucleo.base + '/' : '') + 'php/login.php';
-        var corpo = 'usuario=' + encodeURIComponent(nucleo.ADMIN_NOME) +
+        var corpo = 'usuario=' + encodeURIComponent(identidade) +
                     '&senha=' + encodeURIComponent(senha);
 
         fetch(url, {
@@ -68,21 +58,19 @@
             body: corpo
         })
             .then(function (resposta) {
-                return resposta.text();
+                return resposta.json().then(function (dados) {
+                    return { status: resposta.status, dados: dados };
+                });
             })
-            .then(function (texto) {
-                if (texto.trim() === 'Login realizado com sucesso!') {
+            .then(function (resultado) {
+                if (resultado.status === 200 && resultado.dados.ok === true) {
                     liberar();
                 } else {
-                    falharLogin('Usuário ou senha incorretos.', 'senhaAdmin');
+                    falharLogin(resultado.dados.mensagem || 'Usuário ou senha incorretos.', 'senhaAdmin');
                 }
             })
             .catch(function () {
-                if (loginLocal(identidade, senha)) {
-                    liberar();
-                } else {
-                    falharLogin('Usuário ou senha incorretos.', 'senhaAdmin');
-                }
+                falharLogin('Não foi possível validar o acesso agora. Tente novamente.', 'senhaAdmin');
             });
     }
 

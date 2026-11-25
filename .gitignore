@@ -1,4 +1,6 @@
 RELATORIO.md
 *.md
+!pitch.md
 *.png
 Relatorio_ABNT.docx
+.env

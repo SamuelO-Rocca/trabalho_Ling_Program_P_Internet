@@ -6,7 +6,6 @@ $email = $_POST["email"] ?? "";
 $telefone = $_POST["telefone"] ?? "";
 $dataNascimento = $_POST["dataNascimento"] ?? "";
 
-
 if (
     $nome == "" ||
     $cpf == "" ||
@@ -18,19 +17,14 @@ if (
     exit;
 }
 
-
 if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
     echo "Digite um e-mail válido.";
     exit;
 }
 
-
-if (strlen($cpf) < 11) {
+if (!preg_match('/^\d{11}$/', $cpf)) {
     echo "Digite um CPF válido.";
     exit;
 }
 
-
 echo "Usuário cadastrado com sucesso!";
-
-?>

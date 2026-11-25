@@ -6,7 +6,6 @@ $codigo = $_POST["codigo"] ?? "";
 $status = $_POST["status"] ?? "";
 $localizacao = $_POST["localizacao"] ?? "";
 
-
 if (
     $nome == "" ||
     $descricao == "" ||
@@ -18,19 +17,14 @@ if (
     exit;
 }
 
-
 if ($status != "ativa" && $status != "inativa") {
     echo "Selecione um status válido.";
     exit;
 }
-
 
 if (strlen($codigo) < 2) {
     echo "O código da categoria deve possuir pelo menos 2 caracteres.";
     exit;
 }
 
-
 echo "Categoria cadastrada com sucesso!";
-
-?>

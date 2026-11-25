@@ -13,9 +13,6 @@
     var CHAVE_SESSAO = 'tpi2_sessao';
     var CHAVE_CONTAS = 'tpi2_contas';
     var CHAVE_NAVEGACAO = 'tpi2_navegacao';
-    var ADMIN_NOME = 'admin';
-    var ADMIN_EMAIL = 'admin007@admin.com';
-    var ADMIN_SENHA = '1234';
 
     function injetarCss() {
         var jaExiste = document.querySelector('link[data-tpi2]');
@@ -99,8 +96,7 @@
     function entrarAdmin() {
         salvarJson(sessionStorage, CHAVE_SESSAO, {
             tipo: 'admin',
-            nome: ADMIN_NOME,
-            email: ADMIN_EMAIL
+            nome: 'admin'
         });
     }
 
@@ -405,9 +401,6 @@
         sair: sair,
         atualizarSessao: injetarSessao,
         voltar: voltar,
-        base: base,
-        ADMIN_NOME: ADMIN_NOME,
-        ADMIN_EMAIL: ADMIN_EMAIL,
-        ADMIN_SENHA: ADMIN_SENHA
+        base: base
     };
 }());

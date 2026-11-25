@@ -6,7 +6,6 @@ $ano = $_POST["ano"] ?? "";
 $autor = $_POST["autor"] ?? "";
 $categoria = $_POST["categoria"] ?? "";
 
-
 if (
     $titulo == "" ||
     $isbn == "" ||
@@ -18,12 +17,10 @@ if (
     exit;
 }
 
-
 if (!is_numeric($ano)) {
     echo "O ano deve ser um número.";
     exit;
 }
-
 
 $anoAtual = date("Y");
 
@@ -32,7 +29,4 @@ if ($ano < 1000 || $ano > $anoAtual) {
     exit;
 }
 
-
 echo "Livro cadastrado com sucesso!";
-
-?>
