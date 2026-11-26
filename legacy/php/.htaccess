@@ -9,3 +9,13 @@
 # <Files "teste_conexao.php">
 #     Require all denied
 # </Files>
+# Versao plana legada (a versao implantada fica em src/).
+# Bloqueia acesso direto a credenciais e ao script de teste.
+
+<FilesMatch "^\.env">
+    Require all denied
+</FilesMatch>
+
+<Files "teste_conexao.php">
+    Require all denied
+</Files>
