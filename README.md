@@ -40,7 +40,7 @@ de controle básico sem instalar sistema pesado.
 
 ## Estrutura
 
-```
+```text
 ProvaN1/
 ├── .env.example              modelo das credenciais (copie para .env nesta raiz)
 ├── router.php                router do servidor embutido (php -S ... router.php)
