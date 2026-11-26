@@ -13,3 +13,4 @@ GUIA_APRESENTACAO.md
 
 *.png
 !docs/**/*.png
+AUDITORIA*.md
