@@ -49,14 +49,15 @@ ProvaN1/
 │   ├── php/                  endpoints (login, usuario, livro, autor, categoria, emprestimo, conexao)
 │   └── css/estilo.css        identidade visual (vinho/dourado/areia)
 ├── sql/schema.sql            schema PostgreSQL do banco `biblioteca`
-├── legacy/                   versão plana original da prova (histórico)
-└── docs/                     relatórios, guias e evidências
+├── legacy/                   versão plana original da prova (histórico; html/, php/, js/, css/)
+└── docs/                     relatórios e guias (.md) com evidências em docs/evidencias/
 ```
 
-A versão plana original da prova (pastas `HTML/`, `PHP/`, `js/`, `css/` na
-raiz) está preservada em `legacy/`; os documentos e evidências estão em
-`docs/`. Se a raiz for servida por engano, o `.htaccess` dela bloqueia
-`legacy/`, `docs/`, `sql/` e o `src/php/.env`.
+A versão plana original da prova (pastas `html/`, `php/`, `js/`, `css/`)
+está preservada em `legacy/`; relatórios, guias e evidências estão em
+`docs/` (com imagens e trabalhos em `docs/evidencias/`). Se a raiz for
+servida por engano, o `.htaccess` dela bloqueia `legacy/`, `docs/`, `sql/`
+e o `src/php/.env`.
 
 ## Segurança
 
