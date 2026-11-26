@@ -4,7 +4,7 @@
 RewriteEngine On
 
 RewriteRule ^\.env - [F,L]
-RewriteRule ^(PHP|HTML|JSS|js|sql)/ - [F,L]
+RewriteRule ^(legacy|docs|sql|src/php/\.env) - [F,L]
 RewriteRule \.(sql|log|ini|md|png|docx)$ - [F,L]
 
 <FilesMatch "^\.env">
