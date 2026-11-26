@@ -117,7 +117,7 @@ try {
         ':idioma' => $idioma,
         ':sinopse' => $sinopse !== '' ? $sinopse : null,
         ':estoque' => (int) $estoque,
-        ':disponivel_emprestimo' => $disponivel ? 'true' : 'false'
+        ':disponivel_emprestimo' => $disponivel ? '1' : '0'
     ]);
 
     echo 'Livro cadastrado com sucesso!';
