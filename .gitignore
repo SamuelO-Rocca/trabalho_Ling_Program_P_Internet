@@ -4,8 +4,12 @@ desktop.ini
 
 *.md
 !README.md
+!docs/**/*.md
 RELATORIO*.md
 GUIA_APRESENTACAO.md
 
+*.docx
+!docs/**/*.docx
+
 *.png
-evidencia-*.png
+!docs/**/*.png
