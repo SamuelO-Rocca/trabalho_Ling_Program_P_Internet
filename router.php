@@ -10,7 +10,7 @@
 $uri = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH);
 $caminho = rawurldecode($uri ?: '/');
 
-$padraoBloqueio = '/(^|\/)(\.env|config\.php|conexao\.php|auth\.php|seguranca\.php|csrf\.php|teste_conexao\.php|router\.php)$|\.(sql|log|ini|bak|md)$/i';
+$padraoBloqueio = '/(^|\/)(\.env|config\.php|conexao\.php|auth\.php|seguranca\.php|teste_conexao\.php|router\.php)$|\.(sql|log|ini|bak|md)$/i';
 
 if (preg_match($padraoBloqueio, $caminho)) {
     http_response_code(403);
