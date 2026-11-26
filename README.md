@@ -41,18 +41,23 @@ de controle básico sem instalar sistema pesado.
 ## Estrutura
 
 ```
-src/
-├── index.html / admin.html   páginas inicial e painel administrativo
-├── www/                      formulários (usuário, livro, autor, categoria, empréstimo)
-├── js/                       validações e UI (tpi2-ui.js, admin.js, um JS por formulário)
-├── php/                      endpoints (login, usuario, livro, autor, categoria, emprestimo, conexao)
-└── css/estilo.css            identidade visual (vinho/dourado/areia)
+ProvaN1/
+├── src/                      aplicação (versão implantada)
+│   ├── index.html / admin.html   páginas inicial e painel administrativo
+│   ├── www/                  formulários (usuário, livro, autor, categoria, empréstimo)
+│   ├── js/                   validações e UI (tpi2-ui.js, admin.js, um JS por formulário)
+│   ├── php/                  endpoints (login, usuario, livro, autor, categoria, emprestimo, conexao)
+│   └── css/estilo.css        identidade visual (vinho/dourado/areia)
+├── sql/schema.sql            schema PostgreSQL do banco `biblioteca`
+├── legacy/                   versão plana original da prova (histórico; html/, php/, js/, css/)
+└── docs/                     relatórios e guias (.md) com evidências em docs/evidencias/
 ```
 
-A pasta raiz (`HTML/`, `js/`, `PHP/`, `css/`) é a versão plana original da
-prova, mantida como histórico; `src/` é a versão implantada no Apache. Se a
-raiz for servida por engano, o `.htaccess` dela bloqueia `PHP/`, `js/`, `sql/`,
-`.env` e arquivos de documentação.
+A versão plana original da prova (pastas `html/`, `php/`, `js/`, `css/`)
+está preservada em `legacy/`; relatórios, guias e evidências estão em
+`docs/` (com imagens e trabalhos em `docs/evidencias/`). Se a raiz for
+servida por engano, o `.htaccess` dela bloqueia `legacy/`, `docs/`, `sql/`
+e o `src/php/.env`.
 
 ## Segurança
 
@@ -101,6 +106,31 @@ php -S 127.0.0.1:8000 -t src
 
 No Apache da máquina da disciplina, a raiz do projeto é `src/`
 (ex.: `http://localhost/ProvaN1/src/`).
+
+### Rodar com XAMPP (mesmo banco PostgreSQL do phpPgAdmin)
+
+O XAMPP fornece o Apache; o banco continua sendo o PostgreSQL que o phpPgAdmin
+administra (`biblioteca`, porta 5433). O MariaDB do XAMPP **não** é usado.
+
+1. Copie a pasta `ProvaN1` inteira para a raiz do Apache do XAMPP:
+   - Windows: `C:\xampp\htdocs\ProvaN1\`
+   - Linux: `/opt/lampp/htdocs/ProvaN1/`
+2. Garanta que o PostgreSQL esteja no ar (o mesmo serviço que o phpPgAdmin usa)
+   e que `src/php/.env` aponte para ele (`DB_HOST`, `DB_PORT=5433`,
+   `DB_NAME=biblioteca`, `DB_USER`, `DB_PASS`).
+3. Habilite o `mod_headers` e `mod_rewrite` no Apache do XAMPP (botão
+   `Config` → `httpd.conf`): descomente
+   `LoadModule headers_module modules/mod_headers.so` e
+   `LoadModule rewrite_module modules/mod_rewrite.so`, e permita
+   `AllowOverride All` no diretório `htdocs`.
+4. Importe o schema uma única vez (se o banco ainda não existir):
+   crie o banco `biblioteca` no phpPgAdmin e rode o conteúdo de `sql/schema.sql`.
+5. Inicie o Apache pelo painel do XAMPP e acesse:
+   `http://localhost/ProvaN1/src/index.html` (painel admin: `admin.html`).
+
+Atenção: o servidor embutido `php -S` **não** lê `.htaccess` e expõe o
+`src/php/.env` na rede local — para visualizar o projeto, prefira sempre o
+Apache do XAMPP.
 
 Para gerar um hash de senha para o `.env`:
 
