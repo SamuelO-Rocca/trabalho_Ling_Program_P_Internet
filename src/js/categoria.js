@@ -1,5 +1,6 @@
 window.TPI2_CONFIG = {
     formId: 'formCategoria',
+    csrf: true,
     phpScript: 'categoria.php',
 
     validar: function () {

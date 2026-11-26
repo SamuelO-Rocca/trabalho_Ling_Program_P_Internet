@@ -17,8 +17,13 @@ if ($usuario === '' || $senha === '') {
     responder(false, 'Preencha o usuário e a senha.', 400);
 }
 
-$adminUsuario = getenv('ADMIN_USER') ?: 'admin';
-$adminHash = getenv('ADMIN_PASS_HASH') ?: '$2y$12$PchA2yOupjf7M.vlOiieMeUg.ySkOrs556S8v194mwq4DBbxlvMz.';
+$adminUsuario = getenv('ADMIN_USER');
+$adminHash = getenv('ADMIN_PASS_HASH');
+
+if ($adminUsuario === false || $adminUsuario === '' || $adminHash === false || $adminHash === '') {
+    error_log('ADMIN_USER/ADMIN_PASS_HASH nao configurados no .env');
+    responder(false, 'Autenticação indisponível. Contate o responsável.', 500);
+}
 
 if (!hash_equals($adminUsuario, $usuario) || !password_verify($senha, $adminHash)) {
     responder(false, 'Usuário ou senha incorretos.', 401);
@@ -26,7 +31,7 @@ if (!hash_equals($adminUsuario, $usuario) || !password_verify($senha, $adminHash
 
 session_set_cookie_params([
     'httponly' => true,
-    'samesite' => 'Lax',
+    'samesite' => 'Strict',
     'secure' => !empty($_SERVER['HTTPS'])
 ]);
 session_start();

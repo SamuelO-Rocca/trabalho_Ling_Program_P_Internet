@@ -1,0 +1,19 @@
+# O DocumentRoot deste projeto deve ser a pasta src/.
+#
+# Quando o mod_headers estiver habilitado (sudo a2enmod headers), descomente
+# o bloco abaixo para enviar os cabecalhos de seguranca tambem nos arquivos
+# estaticos (hoje eles vao via PHP em php/seguranca.php e via meta CSP no HTML):
+#
+# Header always set X-Content-Type-Options "nosniff"
+# Header always set X-Frame-Options "DENY"
+# Header always set Referrer-Policy "strict-origin-when-cross-origin"
+# Header always set Permissions-Policy "camera=(), microphone=(), geolocation=()"
+# Header always set Content-Security-Policy "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; form-action 'self'; frame-ancestors 'none'; base-uri 'self'"
+
+<FilesMatch "^\.env">
+    Require all denied
+</FilesMatch>
+
+<FilesMatch "\.(log|sql|bak|ini)$">
+    Require all denied
+</FilesMatch>

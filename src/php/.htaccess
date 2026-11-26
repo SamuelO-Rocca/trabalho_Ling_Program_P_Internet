@@ -9,3 +9,11 @@
 <Files "conexao.php">
     Require all denied
 </Files>
+
+<Files "auth.php">
+    Require all denied
+</Files>
+
+<Files "teste_conexao.php">
+    Require all denied
+</Files>

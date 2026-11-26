@@ -1,5 +1,6 @@
 <?php
 
+
 function carregarEnv($arquivo) {
     if (!is_readable($arquivo)) {
         return;

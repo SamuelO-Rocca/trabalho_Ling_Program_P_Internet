@@ -62,6 +62,7 @@ function atualizarContador() {
 
 window.TPI2_CONFIG = {
     formId: 'formEmprestimo',
+    csrf: true,
     phpScript: 'emprestimo.php',
 
     validar: function () {

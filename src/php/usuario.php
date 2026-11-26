@@ -1,6 +1,29 @@
 <?php
 
+require_once __DIR__ . '/seguranca.php';
+enviarCabecalhosSeguranca();
+
 require_once __DIR__ . '/conexao.php';
+
+function cpfValido(string $cpf): bool {
+    if (preg_match('/^(\d)\1{10}$/', $cpf)) {
+        return false;
+    }
+    for ($t = 9; $t < 11; $t++) {
+        $soma = 0;
+        for ($i = 0; $i < $t; $i++) {
+            $soma += (int) $cpf[$i] * ($t + 1 - $i);
+        }
+        $digito = ($soma * 10) % 11;
+        if ($digito === 10) {
+            $digito = 0;
+        }
+        if ($digito !== (int) $cpf[$t]) {
+            return false;
+        }
+    }
+    return true;
+}
 
 header('Content-Type: text/plain; charset=utf-8');
 
@@ -52,7 +75,13 @@ if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
     exit('Digite um e-mail válido.');
 }
 
-if (!preg_match('/^\d{11}$/', $cpf)) {
+if (mb_strlen($nome) > 100 || mb_strlen($endereco) > 150 || mb_strlen($complemento) > 60
+    || mb_strlen($cidade) > 80 || mb_strlen($observacoes) > 500) {
+    http_response_code(400);
+    exit('Um dos campos excede o tamanho máximo permitido.');
+}
+
+if (!preg_match('/^\d{11}$/', $cpf) || !cpfValido($cpf)) {
     http_response_code(400);
     exit('Digite um CPF válido.');
 }

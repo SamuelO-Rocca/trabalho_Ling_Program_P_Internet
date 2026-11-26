@@ -26,8 +26,8 @@ body {
     min-height: 100vh;
 }
 
-menutpi2,
-tpi2 {
+.menu-principal,
+main.card {
     display: block;
 }
 
@@ -41,21 +41,21 @@ a:hover {
     color: var(--dourado-escuro);
 }
 
-menutpi2 {
+.menu-principal {
     background-color: var(--vinho);
     padding: 0.9rem 1.5rem;
     box-shadow: var(--sombra);
     animation: descer 0.6s ease both;
 }
 
-menutpi2 nav {
+.menu-principal {
     display: flex;
     flex-wrap: wrap;
     gap: 0.4rem 1.2rem;
     justify-content: center;
 }
 
-menutpi2 nav a {
+.menu-principal a {
     color: var(--areia);
     font-weight: bold;
     font-size: 1rem;
@@ -64,7 +64,7 @@ menutpi2 nav a {
     letter-spacing: 0.03em;
 }
 
-menutpi2 nav a::after {
+.menu-principal a::after {
     content: "";
     position: absolute;
     left: 0;
@@ -77,13 +77,13 @@ menutpi2 nav a::after {
     transition: transform 0.3s ease;
 }
 
-menutpi2 nav a:hover,
-menutpi2 nav a:focus-visible {
+.menu-principal a:hover,
+.menu-principal a:focus-visible {
     color: var(--dourado);
 }
 
-menutpi2 nav a:hover::after,
-menutpi2 nav a:focus-visible::after {
+.menu-principal a:hover::after,
+.menu-principal a:focus-visible::after {
     transform: scaleX(1);
 }
 
@@ -96,7 +96,7 @@ h1 {
     animation-delay: 0.15s;
 }
 
-tpi2 {
+main.card {
     max-width: 720px;
     margin: 1rem auto 2.5rem;
     padding: 1.8rem 2rem;
@@ -109,14 +109,10 @@ tpi2 {
     animation-delay: 0.3s;
 }
 
-tpi2 form,
+main.card form,
 main form {
     display: grid;
     gap: 0.4rem;
-}
-
-tpi2 br {
-    display: none;
 }
 
 label {
@@ -310,31 +306,6 @@ input[type="checkbox"] {
     margin-right: 0.4rem;
 }
 
-input[type="file"] {
-    width: 100%;
-    padding: 0.45rem;
-    border: 1.5px dashed var(--chumbo-claro);
-    border-radius: 6px;
-    background-color: var(--areia);
-    transition: border-color var(--transicao);
-}
-
-input[type="file"]:hover {
-    border-color: var(--dourado);
-}
-
-body > a[href$="admin.html"],
-body > a[href^="../"] {
-    display: inline-block;
-    margin: 0 auto 2rem;
-    left: 50%;
-    position: relative;
-    transform: translateX(-50%);
-    font-weight: bold;
-    border-bottom: 2px solid var(--dourado);
-    padding-bottom: 0.15rem;
-}
-
 @keyframes surgir {
     from {
         opacity: 0;
@@ -388,12 +359,12 @@ body > a[href^="../"] {
 }
 
 @media (max-width: 600px) {
-    tpi2 {
+    main.card {
         padding: 1.2rem 1rem;
         margin: 0.5rem 0.6rem 2rem;
     }
 
-    menutpi2 nav {
+    .menu-principal {
         flex-direction: column;
         align-items: center;
         gap: 0.3rem;
@@ -414,21 +385,15 @@ body > a[href^="../"] {
     }
 }
 
-tpi2[hidden] {
+main.card[hidden] {
     display: none;
 }
 
-tpi2 h2 {
+main.card h2 {
     color: var(--vinho);
     font-size: 1.3rem;
     text-align: center;
     margin-bottom: 0.9rem;
-}
-
-.tpi2-dica {
-    font-size: 0.88rem;
-    font-style: italic;
-    color: var(--chumbo-claro);
 }
 
 .tpi2-acoes {
@@ -442,7 +407,7 @@ tpi2 h2 {
     margin-top: 0;
 }
 
-menutpi2 nav a.tpi2-link-voltar {
+.menu-principal a.tpi2-link-voltar {
     color: var(--dourado);
 }
 
@@ -506,20 +471,32 @@ menutpi2 nav a.tpi2-link-voltar {
     margin-bottom: 0;
 }
 
-.tpi2-login-rapido {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-    align-items: center;
-    margin-top: 0.6rem;
+.tpi2-resumo {
+    margin-bottom: 1.2rem;
 }
 
-.tpi2-login-rapido input {
-    flex: 1 1 150px;
-    width: auto;
+.tpi2-resumo-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+    gap: 0.6rem;
 }
 
-.tpi2-login-rapido button {
-    margin-top: 0;
-    white-space: nowrap;
+.tpi2-resumo-item {
+    background-color: var(--areia);
+    border: 1px solid rgba(90, 24, 39, 0.15);
+    border-top: 3px solid var(--dourado);
+    border-radius: 8px;
+    padding: 0.7rem 0.4rem;
+    text-align: center;
+}
+
+.tpi2-resumo-item strong {
+    display: block;
+    font-size: 1.5rem;
+    color: var(--vinho);
+}
+
+.tpi2-resumo-item span {
+    font-size: 0.85rem;
+    color: var(--chumbo-claro);
 }

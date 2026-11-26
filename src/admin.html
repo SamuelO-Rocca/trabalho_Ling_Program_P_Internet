@@ -3,41 +3,40 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; form-action 'self'; base-uri 'self'">
     <meta name="description" content="Painel administrativo da Biblioteca Virtual">
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link rel="stylesheet" href="css/estilo.css" data-tpi2="estilo">
     <title>Painel Administrativo | Biblioteca Virtual</title>
 </head>
 <body>
 
-    <menutpi2>
-
-        <nav>
-            <a href="index.html">Início</a>
-            <a href="admin.html">Painel Administrativo</a>
-            <a href="www/usuario.html">Usuários</a>
-            <a href="www/livro.html">Livros</a>
-            <a href="www/autor.html">Autores</a>
-            <a href="www/emprestimo.html">Empréstimos</a>
-            <a href="www/categoria.html">Categorias</a>
-        </nav>
-
-    </menutpi2>
+    <nav class="menu-principal" aria-label="Menu principal">
+        <a href="index.html">Início</a>
+        <a href="admin.html">Painel Administrativo</a>
+        <a href="www/usuario.html">Usuários</a>
+        <a href="www/livro.html">Livros</a>
+        <a href="www/autor.html">Autores</a>
+        <a href="www/emprestimo.html">Empréstimos</a>
+        <a href="www/categoria.html">Categorias</a>
+    </nav>
 
     <h1>Painel Administrativo</h1>
 
-    <tpi2 id="tpi2-login">
+    <main class="card" id="tpi2-login">
 
         <h2>Acesso do administrador</h2>
 
         <form id="formLoginAdmin">
 
             <p>
-                <label for="loginAdmin">Nome/E-mail:</label>
-                <input type="text" id="loginAdmin" name="usuario" autocomplete="username" placeholder="Usuário do administrador">
+                <label for="loginAdmin">Usuário:</label>
+                <input type="text" id="loginAdmin" name="usuario" autocomplete="username" placeholder="Usuário do administrador" required>
             </p>
 
             <p>
                 <label for="senhaAdmin">Senha:</label>
-                <input type="password" id="senhaAdmin" name="senha" autocomplete="current-password" placeholder="Senha do administrador">
+                <input type="password" id="senhaAdmin" name="senha" autocomplete="current-password" placeholder="Senha do administrador" required>
             </p>
 
             <p class="tpi2-acoes">
@@ -47,13 +46,16 @@
 
         </form>
 
-    </tpi2>
+    </main>
 
-    <tpi2 id="tpi2-painel" hidden>
+    <main class="card" id="tpi2-painel" hidden>
+
+        <section class="tpi2-resumo" aria-live="polite">
+            <h2>Resumo do acervo</h2>
+            <div class="tpi2-resumo-grid" id="tpi2-resumo-grid"></div>
+        </section>
 
         <p>As ações do painel são exibidas apenas para o administrador.</p>
-
-        <br>
 
         <p>
             <a href="www/usuario.html">Cadastrar usuário</a>
@@ -79,7 +81,7 @@
             <button type="button" id="btnSairAdmin">Encerrar sessão</button>
         </p>
 
-    </tpi2>
+    </main>
 
     <script src="js/tpi2-ui.js" defer></script>
     <script src="js/admin.js" defer></script>

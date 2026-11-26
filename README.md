@@ -49,27 +49,44 @@ src/
 └── css/estilo.css            identidade visual (vinho/dourado/areia)
 ```
 
-A pasta raiz (`HTML/`, `JSS/`, `PHP/`, `css/`) é a versão plana original da
-prova; `src/` é a versão empacotada implantada no Apache.
+A pasta raiz (`HTML/`, `js/`, `PHP/`, `css/`) é a versão plana original da
+prova, mantida como histórico; `src/` é a versão implantada no Apache. Se a
+raiz for servida por engano, o `.htaccess` dela bloqueia `PHP/`, `js/`, `sql/`,
+`.env` e arquivos de documentação.
 
-## Segurança (endurecida nesta rodada)
+## Segurança
 
 - Credenciais do banco e do admin **fora do código**: arquivo `.env` (ignorado
-  pelo git) carregado por `php/config.php`; `.env.example` documenta as chaves.
+  pelo git e bloqueado no Apache via `.htaccess`) carregado por `php/config.php`;
+  `.env.example` documenta as chaves e como gerar um hash novo.
+- O `login.php` **falha fechado**: sem `ADMIN_USER`/`ADMIN_PASS_HASH` no `.env`,
+  nenhum login é aceito (não existe hash reserva no código).
 - Conexão PDO com `ERRMODE_EXCEPTION`, `EMULATE_PREPARES = false`, fetch
   associativo e `client_encoding UTF8`.
 - Erros de banco vão para o `error_log` e o usuário recebe mensagem genérica
   (nada de vazar host/SQL no navegador).
 - Login server-side: `password_verify` contra hash bcrypt, comparação
-  `hash_equals` para o usuário, sessão PHP com cookie `HttpOnly` + `SameSite=Lax`
-  e `session_regenerate_id`; resposta em JSON com código HTTP correto.
-- Credenciais de admin **não existem mais no JavaScript** — o painel só libera
-  com resposta 200 do servidor; o fallback local foi removido.
-- Validação de CPF por expressão regular (antes era só contagem de caracteres).
+  `hash_equals` para o usuário, sessão PHP com cookie `HttpOnly` +
+  `SameSite=Strict`, `session.use_strict_mode` e `session_regenerate_id`;
+  resposta em JSON com código HTTP correto. Limite de 5 tentativas a cada
+  60 segundos (bloqueio temporário em sessão).
+- Endpoints administrativos (`autor.php`, `categoria.php`, `emprestimo.php`)
+  exigem `$_SESSION['tipo'] === 'admin'` **e** token CSRF por POST
+  (`php/csrf.php` entrega o token; `php/logout.php` destrói a sessão no
+  servidor). `livro.php` e `usuario.php` são cadastros públicos.
+- Headers de segurança no `.htaccess` da raiz pública (`src/`): CSP,
+  `X-Content-Type-Options`, `X-Frame-Options`, `Referrer-Policy` e
+  `Permissions-Policy`.
+- Validação de CPF com dígitos verificadores, e limites de tamanho (`mb_strlen`)
+  em todos os campos de texto.
+- Nada de senha no navegador: o cadastro de usuário não guarda senha em
+  `localStorage`/`sessionStorage`.
 
-Limitações conhecidas (escopo da disciplina): autenticação de usuários comuns
-é demonstrativa no cliente (localStorage), e os formulários ainda não têm
-token CSRF — próximos passos naturais.
+Limitações conhecidas (escopo da disciplina): a "conta" do usuário comum ainda
+é apenas um marcador de sessão no cliente (sem senha envolvida); o registro de
+empréstimo exige sessão de administrador no servidor; os cadastros públicos
+(`usuario.php`, `livro.php`) não têm rate limit próprio; e ainda não há CRUD de
+listagem/edição — próximos passos naturais.
 
 ## Como rodar
 
@@ -93,9 +110,8 @@ php -r "echo password_hash('sua-senha', PASSWORD_DEFAULT), PHP_EOL;"
 
 ## Próximos passos
 
-1. Migrar a autenticação de usuários para o servidor (tabela `usuario` com
-   `password_hash`, sessão PHP em todos os endpoints).
-2. Adicionar token CSRF nos formulários e `session_start()` com verificação de
-   `$_SESSION['tipo']` nos endpoints administrativos.
-3. CRUD completo (listar/editar/excluir) para livros, autores e empréstimos.
-4. Upload real da capa do livro com validação de tipo/tamanho no PHP.
+1. Migrar a autenticação de usuários comuns para o servidor (login na tabela
+   `usuario` com `password_hash`, sessão PHP nos endpoints de usuário).
+2. CRUD completo (listar/editar/excluir) para livros, autores e empréstimos.
+3. Upload real da capa do livro com validação de tipo/tamanho no PHP
+   (campo hoje removido do formulário até lá).

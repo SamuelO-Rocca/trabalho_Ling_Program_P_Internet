@@ -1,13 +1,25 @@
 <?php
 
-require_once __DIR__ . '/conexao.php';
+require_once __DIR__ . '/seguranca.php';
+enviarCabecalhosSeguranca();
+
+require_once __DIR__ . '/auth.php';
 
 header('Content-Type: text/plain; charset=utf-8');
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     http_response_code(405);
-    exit('Método não permitido.');
+    exit('Metodo nao permitido.');
 }
+
+exigirAdmin();
+
+if (!validarCsrf($_POST['csrf'] ?? null)) {
+    http_response_code(403);
+    exit('Token de seguranca invalido. Recarregue a pagina e tente de novo.');
+}
+
+require_once __DIR__ . '/conexao.php';
 
 $usuario = trim($_POST['usuario'] ?? '');
 $livro = trim($_POST['livro'] ?? '');
@@ -23,7 +35,12 @@ if (
     $observacao === ''
 ) {
     http_response_code(400);
-    exit('Preencha todos os campos do empréstimo.');
+    exit('Preencha todos os campos do emprestimo.');
+}
+
+if (mb_strlen($usuario) > 150 || mb_strlen($livro) > 200 || mb_strlen($observacao) > 500) {
+    http_response_code(400);
+    exit('Um dos campos excede o tamanho maximo permitido.');
 }
 
 $inicio = DateTimeImmutable::createFromFormat('Y-m-d', $dataEmprestimo);
@@ -38,19 +55,19 @@ if (
     ($errosFim !== false && ($errosFim['warning_count'] > 0 || $errosFim['error_count'] > 0))
 ) {
     http_response_code(400);
-    exit('Digite datas válidas.');
+    exit('Digite datas validas.');
 }
 
 if ($fim < $inicio) {
     http_response_code(400);
-    exit('A data de devolução não pode ser anterior à data do empréstimo.');
+    exit('A data de devolucao nao pode ser anterior a data do emprestimo.');
 }
 
 $dias = (int) $inicio->diff($fim)->format('%a');
 
 if ($dias > 7) {
     http_response_code(400);
-    exit('O empréstimo não pode ultrapassar 7 dias.');
+    exit('O emprestimo nao pode ultrapassar 7 dias.');
 }
 
 try {
@@ -66,9 +83,9 @@ try {
         ':observacao' => $observacao
     ]);
 
-    echo 'Empréstimo registrado com sucesso!';
+    echo 'Emprestimo registrado com sucesso!';
 } catch (PDOException $e) {
-    error_log('Erro ao registrar empréstimo: ' . $e->getMessage());
+    error_log('Erro ao registrar emprestimo: ' . $e->getMessage());
     http_response_code(500);
-    exit('Erro ao registrar empréstimo. Tente novamente.');
+    exit('Erro ao registrar emprestimo. Tente novamente.');
 }

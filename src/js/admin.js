@@ -26,10 +26,45 @@
         }
     }
 
+    function carregarResumo() {
+        var grid = elemento('tpi2-resumo-grid');
+        if (!grid) {
+            return;
+        }
+        var url = (nucleo.base ? nucleo.base + '/' : '') + 'php/painel.php';
+        fetch(url, { method: 'GET', credentials: 'same-origin' })
+            .then(function (resposta) {
+                return resposta.json();
+            })
+            .then(function (dados) {
+                grid.textContent = '';
+                if (!dados || !dados.totais) {
+                    grid.textContent = 'Resumo indisponível.';
+                    return;
+                }
+                Object.keys(dados.totais).forEach(function (chave) {
+                    var item = dados.totais[chave];
+                    var caixa = document.createElement('div');
+                    caixa.className = 'tpi2-resumo-item';
+                    var numero = document.createElement('strong');
+                    numero.textContent = item.total;
+                    var rotulo = document.createElement('span');
+                    rotulo.textContent = item.titulo;
+                    caixa.appendChild(numero);
+                    caixa.appendChild(rotulo);
+                    grid.appendChild(caixa);
+                });
+            })
+            .catch(function () {
+                grid.textContent = 'Não foi possível carregar o resumo agora.';
+            });
+    }
+
     function liberar() {
         nucleo.entrarAdmin();
         render();
         nucleo.atualizarSessao();
+        carregarResumo();
         nucleo.toast('Acesso ao painel liberado.');
     }
 
@@ -54,6 +89,7 @@
 
         fetch(url, {
             method: 'POST',
+            credentials: 'same-origin',
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
             body: corpo
         })
@@ -76,6 +112,7 @@
 
     function iniciarAdmin() {
         nucleo.sair();
+        nucleo.encerrarSessaoServidor();
         nucleo.atualizarSessao();
 
         var form = elemento('formLoginAdmin');
@@ -108,9 +145,11 @@
         if (botaoSair) {
             botaoSair.addEventListener('click', function () {
                 nucleo.sair();
-                render();
-                nucleo.atualizarSessao();
-                nucleo.toast('Sessão encerrada.');
+                nucleo.encerrarSessaoServidor().then(function () {
+                    render();
+                    nucleo.atualizarSessao();
+                    nucleo.toast('Sessão encerrada.');
+                });
             });
         }
 

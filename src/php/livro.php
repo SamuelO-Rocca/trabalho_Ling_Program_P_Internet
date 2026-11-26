@@ -1,5 +1,8 @@
 <?php
 
+require_once __DIR__ . '/seguranca.php';
+enviarCabecalhosSeguranca();
+
 require_once __DIR__ . '/conexao.php';
 
 header('Content-Type: text/plain; charset=utf-8');
@@ -33,6 +36,11 @@ if (
 ) {
     http_response_code(400);
     exit('Preencha todos os campos do livro.');
+}
+
+if (mb_strlen($titulo) > 200 || mb_strlen($autor) > 150 || mb_strlen($editora) > 100 || mb_strlen($sinopse) > 1000) {
+    http_response_code(400);
+    exit('Um dos campos excede o tamanho máximo permitido.');
 }
 
 if (!preg_match('/^(\d{10}|\d{13})$/', $isbn)) {
@@ -89,11 +97,11 @@ try {
     $sql = 'INSERT INTO livro (
                 titulo, autor, isbn, editora, edicao, ano_publicacao,
                 numero_paginas, categoria, idioma, sinopse, estoque,
-                disponivel_emprestimo, capa
+                disponivel_emprestimo
             ) VALUES (
                 :titulo, :autor, :isbn, :editora, :edicao, :ano_publicacao,
                 :numero_paginas, :categoria, :idioma, :sinopse, :estoque,
-                :disponivel_emprestimo, :capa
+                :disponivel_emprestimo
             )';
 
     $stmt = $pdo->prepare($sql);
@@ -109,8 +117,7 @@ try {
         ':idioma' => $idioma,
         ':sinopse' => $sinopse !== '' ? $sinopse : null,
         ':estoque' => (int) $estoque,
-        ':disponivel_emprestimo' => $disponivel ? 'true' : 'false',
-        ':capa' => null
+        ':disponivel_emprestimo' => $disponivel ? 'true' : 'false'
     ]);
 
     echo 'Livro cadastrado com sucesso!';
