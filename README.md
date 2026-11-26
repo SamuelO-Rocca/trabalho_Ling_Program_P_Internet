@@ -23,7 +23,7 @@ de controle básico sem instalar sistema pesado.
 ## Funcionalidades
 
 | Área | O que faz |
-|---|---|
+| --- | --- |
 | Usuários | Cadastro com CPF (11 dígitos), e-mail válido, endereço e senha mínima de 8 caracteres |
 | Livros | Título, ISBN (10 ou 13 dígitos), ano de publicação, categoria, estoque e capa |
 | Autores | Nome, nacionalidade, nascimento, e-mail e biografia; grava no PostgreSQL via PDO com prepared statement |
@@ -46,10 +46,10 @@ ProvaN1/
 ├── router.php                router do servidor embutido (php -S ... router.php)
 ├── index.html                redireciona para src/ se a raiz for servida por engano
 ├── src/                      aplicação (versão implantada)
-│   ├── index.html / admin.html   páginas inicial e painel administrativo
+│   ├── index.html / admin.html / login.html   páginas inicial, painel e login do usuário
 │   ├── www/                  formulários (usuário, livro, autor, categoria, empréstimo)
 │   ├── js/                   validações e UI (tpi2-ui.js, admin.js, um JS por formulário)
-│   ├── php/                  endpoints (login, usuario, livro, autor, categoria, emprestimo, conexao)
+│   ├── php/                  endpoints (login, login_usuario, usuario, livro, autor, categoria, emprestimo, conexao)
 │   └── css/estilo.css        identidade visual (vinho/dourado/areia)
 ├── sql/schema.sql            schema PostgreSQL do banco `biblioteca`
 ├── legacy/                   versão plana original da prova (histórico; html/, php/, js/, css/)

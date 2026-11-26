@@ -1,0 +1,2 @@
+# O markdownlint nao deve ler arquivos que nao sao Markdown
+**/.htaccess

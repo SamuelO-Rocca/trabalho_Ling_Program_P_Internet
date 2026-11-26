@@ -8,7 +8,7 @@ require_once __DIR__ . '/auth.php';
 
 header('Content-Type: application/json; charset=utf-8');
 
-function responder($ok, $mensagem, $codigo = 200) {
+function responder(bool $ok, string $mensagem, int $codigo = 200): void {
     http_response_code($codigo);
     echo json_encode(['ok' => $ok, 'mensagem' => $mensagem]);
     exit;

@@ -1,7 +1,7 @@
 <?php
 
 
-function carregarEnv($arquivo) {
+function carregarEnv(string $arquivo): void {
     if (!is_readable($arquivo)) {
         return;
     }

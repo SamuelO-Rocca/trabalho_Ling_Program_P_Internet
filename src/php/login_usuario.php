@@ -8,7 +8,7 @@ require_once __DIR__ . '/auth.php';
 
 header('Content-Type: application/json; charset=utf-8');
 
-function responder($ok, $mensagem, $codigo = 200) {
+function responder(bool $ok, string $mensagem, int $codigo = 200): void {
     http_response_code($codigo);
     echo json_encode(['ok' => $ok, 'mensagem' => $mensagem]);
     exit;
@@ -64,4 +64,10 @@ $_SESSION['tipo'] = 'usuario';
 $_SESSION['usuario_id'] = (int) $usuario['id'];
 $_SESSION['usuario'] = $usuario['nome'];
 
-responder(true, 'Login realizado com sucesso!');
+http_response_code(200);
+echo json_encode([
+    'ok' => true,
+    'mensagem' => 'Login realizado com sucesso!',
+    'nome' => $usuario['nome'],
+    'email' => $usuario['email']
+]);
