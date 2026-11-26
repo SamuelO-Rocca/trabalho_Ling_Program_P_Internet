@@ -4,65 +4,55 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cadastro de Autor</title>
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; form-action 'self'; base-uri 'self'">
+    <meta name="description" content="Formulário de cadastro de autor da Biblioteca Virtual">
+    <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+    <link rel="stylesheet" href="../css/estilo.css" data-tpi2="estilo">
+    <title>Cadastro de Autor | Biblioteca Virtual</title>
 </head>
 
 <body>
 
-    <menutpi2>
-
-        <nav>
-            <a href="../index.html">Início</a>
-            <a href="../admin.html">Painel Administrativo</a>
-            <a href="usuario.html">Usuários</a>
-            <a href="livro.html">Livros</a>
-            <a href="autor.html">Autores</a>
-            <a href="emprestimo.html">Empréstimos</a>
-            <a href="categoria.html">Categorias</a>
-        </nav>
-
-    </menutpi2>
+    <nav class="menu-principal" aria-label="Menu principal">
+        <a href="../index.html">Início</a>
+        <a href="../admin.html">Painel Administrativo</a>
+        <a href="usuario.html">Usuários</a>
+        <a href="livro.html">Livros</a>
+        <a href="autor.html">Autores</a>
+        <a href="emprestimo.html">Empréstimos</a>
+        <a href="categoria.html">Categorias</a>
+    </nav>
 
     <h1>Cadastro de Autor</h1>
 
-    <tpi2>
+    <main class="card">
 
         <form id="formAutor">
 
             <label for="nome">Nome:</label>
-            <input type="text" id="nome" name="nome">
-
-            <br><br>
+            <input type="text" id="nome" name="nome" maxlength="150" required>
 
             <label for="nacionalidade">Nacionalidade:</label>
-            <input type="text" id="nacionalidade" name="nacionalidade">
-
-            <br><br>
+            <input type="text" id="nacionalidade" name="nacionalidade" maxlength="100" required>
 
             <label for="dataNascimento">Data de nascimento:</label>
-            <input type="date" id="dataNascimento" name="dataNascimento">
-
-            <br><br>
+            <input type="date" id="dataNascimento" name="dataNascimento" required>
 
             <label for="email">E-mail:</label>
-            <input type="email" id="email" name="email">
-
-            <br><br>
+            <input type="email" id="email" name="email" maxlength="120" autocomplete="email" required>
 
             <label for="biografia">Biografia:</label>
-            <textarea id="biografia" name="biografia"></textarea>
-
-            <br><br>
+            <textarea id="biografia" name="biografia" rows="5" maxlength="2000" required></textarea>
 
             <button type="submit">Cadastrar Autor</button>
 
         </form>
 
-    </tpi2>
+    </main>
 
-    <br>
-
-    <a href="../admin.html">Voltar para o painel administrativo</a>
+    <p class="tpi2-voltar-solto">
+        <a href="../admin.html">Voltar para o painel administrativo</a>
+    </p>
 
     <script src="../js/autor.js"></script>
 

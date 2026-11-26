@@ -20,20 +20,51 @@
         login.hidden = admin;
         painel.hidden = !admin;
 
-        var campo = elemento('loginAdmin');
         var senha = elemento('senhaAdmin');
-        if (campo && !campo.value) {
-            campo.value = nucleo.ADMIN_NOME;
-        }
         if (senha) {
             senha.value = '';
         }
+    }
+
+    function carregarResumo() {
+        var grid = elemento('tpi2-resumo-grid');
+        if (!grid) {
+            return;
+        }
+        var url = (nucleo.base ? nucleo.base + '/' : '') + 'php/painel.php';
+        fetch(url, { method: 'GET', credentials: 'same-origin' })
+            .then(function (resposta) {
+                return resposta.json();
+            })
+            .then(function (dados) {
+                grid.textContent = '';
+                if (!dados || !dados.totais) {
+                    grid.textContent = 'Resumo indisponível.';
+                    return;
+                }
+                Object.keys(dados.totais).forEach(function (chave) {
+                    var item = dados.totais[chave];
+                    var caixa = document.createElement('div');
+                    caixa.className = 'tpi2-resumo-item';
+                    var numero = document.createElement('strong');
+                    numero.textContent = item.total;
+                    var rotulo = document.createElement('span');
+                    rotulo.textContent = item.titulo;
+                    caixa.appendChild(numero);
+                    caixa.appendChild(rotulo);
+                    grid.appendChild(caixa);
+                });
+            })
+            .catch(function () {
+                grid.textContent = 'Não foi possível carregar o resumo agora.';
+            });
     }
 
     function liberar() {
         nucleo.entrarAdmin();
         render();
         nucleo.atualizarSessao();
+        carregarResumo();
         nucleo.toast('Acesso ao painel liberado.');
     }
 
@@ -51,43 +82,37 @@
         }
     }
 
-    function loginLocal(identidade, senha) {
-        var registro = identidade.trim().toLowerCase();
-        var nomeOk = registro === nucleo.ADMIN_NOME || registro === nucleo.ADMIN_EMAIL;
-        return nomeOk && senha === nucleo.ADMIN_SENHA;
-    }
-
     function entrar(identidade, senha) {
         var url = (nucleo.base ? nucleo.base + '/' : '') + 'php/login.php';
-        var corpo = 'usuario=' + encodeURIComponent(nucleo.ADMIN_NOME) +
+        var corpo = 'usuario=' + encodeURIComponent(identidade) +
                     '&senha=' + encodeURIComponent(senha);
 
         fetch(url, {
             method: 'POST',
+            credentials: 'same-origin',
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
             body: corpo
         })
             .then(function (resposta) {
-                return resposta.text();
+                return resposta.json().then(function (dados) {
+                    return { status: resposta.status, dados: dados };
+                });
             })
-            .then(function (texto) {
-                if (texto.trim() === 'Login realizado com sucesso!') {
+            .then(function (resultado) {
+                if (resultado.status === 200 && resultado.dados.ok === true) {
                     liberar();
                 } else {
-                    falharLogin('Usuário ou senha incorretos.', 'senhaAdmin');
+                    falharLogin(resultado.dados.mensagem || 'Usuário ou senha incorretos.', 'senhaAdmin');
                 }
             })
             .catch(function () {
-                if (loginLocal(identidade, senha)) {
-                    liberar();
-                } else {
-                    falharLogin('Usuário ou senha incorretos.', 'senhaAdmin');
-                }
+                falharLogin('Não foi possível validar o acesso agora. Tente novamente.', 'senhaAdmin');
             });
     }
 
     function iniciarAdmin() {
         nucleo.sair();
+        nucleo.encerrarSessaoServidor();
         nucleo.atualizarSessao();
 
         var form = elemento('formLoginAdmin');
@@ -120,9 +145,11 @@
         if (botaoSair) {
             botaoSair.addEventListener('click', function () {
                 nucleo.sair();
-                render();
-                nucleo.atualizarSessao();
-                nucleo.toast('Sessão encerrada.');
+                nucleo.encerrarSessaoServidor().then(function () {
+                    render();
+                    nucleo.atualizarSessao();
+                    nucleo.toast('Sessão encerrada.');
+                });
             });
         }
 

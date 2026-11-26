@@ -41,7 +41,7 @@ function atualizarContador() {
     }
 
     if (dias < 0) {
-        contador.textContent = 'A devolução está antes do empréstimo (' + dias + ' dia(s).)';
+        contador.textContent = 'A devolução está antes do empréstimo (' + dias + ' dia(s)).';
         contador.classList.add('tpi2-info-alerta');
         return;
     }
@@ -62,6 +62,7 @@ function atualizarContador() {
 
 window.TPI2_CONFIG = {
     formId: 'formEmprestimo',
+    csrf: true,
     phpScript: 'emprestimo.php',
 
     validar: function () {

@@ -1,5 +1,6 @@
 window.TPI2_CONFIG = {
     formId: 'formAutor',
+    csrf: true,
     phpScript: 'autor.php',
 
     validar: function () {

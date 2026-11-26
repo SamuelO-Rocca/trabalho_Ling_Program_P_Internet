@@ -1,0 +1,12 @@
+# Regras de recurso caso a raiz do projeto seja servida por engano.
+# O DocumentRoot correto e a pasta src/ (veja README.md).
+
+RewriteEngine On
+
+RewriteRule ^\.env - [F,L]
+RewriteRule ^(PHP|HTML|JSS|js|sql)/ - [F,L]
+RewriteRule \.(sql|log|ini|md|png|docx)$ - [F,L]
+
+<FilesMatch "^\.env">
+    Require all denied
+</FilesMatch>

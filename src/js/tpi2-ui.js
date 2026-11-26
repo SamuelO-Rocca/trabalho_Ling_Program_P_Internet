@@ -11,11 +11,7 @@
     }
 
     var CHAVE_SESSAO = 'tpi2_sessao';
-    var CHAVE_CONTAS = 'tpi2_contas';
     var CHAVE_NAVEGACAO = 'tpi2_navegacao';
-    var ADMIN_NOME = 'admin';
-    var ADMIN_EMAIL = 'admin007@admin.com';
-    var ADMIN_SENHA = '1234';
 
     function injetarCss() {
         var jaExiste = document.querySelector('link[data-tpi2]');
@@ -99,54 +95,24 @@
     function entrarAdmin() {
         salvarJson(sessionStorage, CHAVE_SESSAO, {
             tipo: 'admin',
-            nome: ADMIN_NOME,
-            email: ADMIN_EMAIL
+            nome: 'admin'
+        });
+    }
+
+    function encerrarSessaoServidor() {
+        if (!ehAdmin()) {
+            return Promise.resolve();
+        }
+        var url = (base ? base + '/' : '') + 'php/logout.php';
+        return fetch(url, { method: 'POST' }).catch(function () {
+            return null;
         });
     }
 
     function sair() {
-        sessionStorage.removeItem(CHAVE_SESSAO);
-    }
-
-    function registrarConta(nome, email, senha) {
-        var contas = lerJson(localStorage, CHAVE_CONTAS, []);
-        var registro = email.trim().toLowerCase();
-        var existente = null;
-
-        for (var i = 0; i < contas.length; i++) {
-            if (contas[i].email === registro) {
-                existente = contas[i];
-                break;
-            }
-        }
-
-        if (existente) {
-            existente.nome = nome.trim();
-            existente.senha = senha;
-        } else {
-            contas.push({ nome: nome.trim(), email: registro, senha: senha });
-        }
-
-        salvarJson(localStorage, CHAVE_CONTAS, contas);
-        return { nome: nome.trim(), email: registro };
-    }
-
-    function entrarUsuario(email, senha) {
-        var contas = lerJson(localStorage, CHAVE_CONTAS, []);
-        var registro = email.trim().toLowerCase();
-
-        for (var i = 0; i < contas.length; i++) {
-            if (contas[i].email === registro && contas[i].senha === senha) {
-                salvarJson(sessionStorage, CHAVE_SESSAO, {
-                    tipo: 'usuario',
-                    nome: contas[i].nome,
-                    email: registro
-                });
-                return true;
-            }
-        }
-
-        return false;
+        encerrarSessaoServidor().then(function () {
+            sessionStorage.removeItem(CHAVE_SESSAO);
+        });
     }
 
     function paginaAtual() {
@@ -199,7 +165,7 @@
         if (naPaginaInicial()) {
             return;
         }
-        var nav = document.querySelector('menutpi2 nav');
+        var nav = document.querySelector('.menu-principal');
         if (nav) {
             if (nav.querySelector('.tpi2-link-voltar')) {
                 return;
@@ -218,7 +184,7 @@
     }
 
     function injetarSessao() {
-        var menu = document.querySelector('menutpi2') || document.querySelector('header');
+        var menu = document.querySelector('.menu-principal') || document.querySelector('header');
         if (!menu) {
             return;
         }
@@ -257,52 +223,16 @@
         aviso.className = 'tpi2-aviso';
 
         var texto = document.createElement('p');
-        texto.textContent = 'Para registrar um empréstimo você precisa de uma conta. Crie a sua ou entre com o e-mail e a senha cadastrados.';
+        texto.textContent = 'O registro de empréstimo é restrito ao administrador. Faça login no painel para continuar.';
 
         var criar = document.createElement('p');
         var linkCriar = document.createElement('a');
-        linkCriar.href = (base ? base + '/' : '') + 'www/usuario.html';
-        linkCriar.textContent = 'Criar conta';
+        linkCriar.href = (base ? base + '/' : '') + 'admin.html';
+        linkCriar.textContent = 'Ir para o painel administrativo';
         criar.appendChild(linkCriar);
 
-        var rapido = document.createElement('div');
-        rapido.className = 'tpi2-login-rapido';
-        var email = document.createElement('input');
-        email.type = 'email';
-        email.id = 'tpi2-conta-email';
-        email.placeholder = 'E-mail da conta';
-        email.autocomplete = 'email';
-        var senha = document.createElement('input');
-        senha.type = 'password';
-        senha.id = 'tpi2-conta-senha';
-        senha.placeholder = 'Senha';
-        senha.autocomplete = 'current-password';
-        var entrar = document.createElement('button');
-        entrar.type = 'button';
-        entrar.textContent = 'Entrar';
-
-        entrar.addEventListener('click', function () {
-            if (entrarUsuario(email.value, senha.value)) {
-                aviso.parentNode.removeChild(aviso);
-                injetarSessao();
-                toast('Bem-vindo(a)!');
-            } else {
-                marcarErro('tpi2-conta-email');
-                toast('E-mail ou senha incorretos.', 'erro');
-            }
-        });
-        senha.addEventListener('keydown', function (evento) {
-            if (evento.key === 'Enter') {
-                entrar.click();
-            }
-        });
-
-        rapido.appendChild(email);
-        rapido.appendChild(senha);
-        rapido.appendChild(entrar);
         aviso.appendChild(texto);
         aviso.appendChild(criar);
-        aviso.appendChild(rapido);
         form.parentNode.insertBefore(aviso, form);
     }
 
@@ -315,13 +245,11 @@
         form.addEventListener('submit', function () {
             var nome = form.querySelector('#nome');
             var email = form.querySelector('#email');
-            var senha = form.querySelector('#senha');
-            if (nome && email && senha && nome.value && email.value && senha.value) {
-                var conta = registrarConta(nome.value, email.value, senha.value);
+            if (nome && email && nome.value.trim() && email.value.trim()) {
                 salvarJson(sessionStorage, CHAVE_SESSAO, {
                     tipo: 'usuario',
-                    nome: conta.nome,
-                    email: conta.email
+                    nome: nome.value.trim(),
+                    email: email.value.trim().toLowerCase()
                 });
             }
         });
@@ -331,29 +259,71 @@
         if (form.id !== 'formEmprestimo' || temSessao()) {
             return false;
         }
-        toast('Crie uma conta para registrar um empréstimo.', 'erro');
+        toast('Faça login no painel administrativo para registrar um empréstimo.', 'erro');
         setTimeout(function () {
-            location.href = (base ? base + '/' : '') + 'www/usuario.html';
+            location.href = (base ? base + '/' : '') + 'admin.html';
         }, 900);
         return true;
+    }
+
+    function buscarCsrf() {
+        var url = (base ? base + '/' : '') + 'php/csrf.php';
+        return fetch(url, { method: 'GET', credentials: 'same-origin' })
+            .then(function (resposta) {
+                return resposta.json();
+            })
+            .then(function (dados) {
+                return dados && dados.csrf ? dados.csrf : null;
+            })
+            .catch(function () {
+                return null;
+            });
     }
 
     function enviarAoPhp(form) {
         if (!config.phpScript) {
             return;
         }
-        form.action = (base ? base + '/' : '') + 'php/' + config.phpScript;
-        form.method = 'post';
+        var url = (base ? base + '/' : '') + 'php/' + config.phpScript;
 
-        toast('Enviando ao servidor...');
-        var desabilitar = form.querySelectorAll('button');
-        for (var i = 0; i < desabilitar.length; i++) {
-            desabilitar[i].disabled = true;
+        function postar(token) {
+            var dados = new FormData(form);
+            if (token) {
+                dados.set('csrf', token);
+            }
+            toast('Enviando ao servidor...');
+            fetch(url, {
+                method: 'POST',
+                credentials: 'same-origin',
+                body: dados
+            }).then(function (resposta) {
+                return resposta.text().then(function (texto) {
+                    return { status: resposta.status, texto: texto };
+                });
+            }).then(function (resultado) {
+                if (resultado.status === 200) {
+                    toast(resultado.texto || 'Registro salvo com sucesso!');
+                    form.reset();
+                    if (typeof config.depoisDeEnviar === 'function') {
+                        config.depoisDeEnviar();
+                    }
+                } else if (resultado.status === 401) {
+                    toast('Faça login no painel administrativo antes de enviar.', 'erro');
+                } else if (resultado.status === 403) {
+                    toast('Sessão expirada. Recarregue a página e faça login de novo.', 'erro');
+                } else {
+                    toast(resultado.texto || 'Não foi possível salvar. Verifique os campos.', 'erro');
+                }
+            }).catch(function () {
+                toast('Não foi possível falar com o servidor agora.', 'erro');
+            });
         }
 
-        setTimeout(function () {
-            form.submit();
-        }, 700);
+        if (config.csrf) {
+            buscarCsrf().then(postar);
+        } else {
+            postar(null);
+        }
     }
 
     function iniciar() {
@@ -401,13 +371,10 @@
         sessaoAtual: sessaoAtual,
         ehAdmin: ehAdmin,
         entrarAdmin: entrarAdmin,
-        entrarUsuario: entrarUsuario,
         sair: sair,
+        encerrarSessaoServidor: encerrarSessaoServidor,
         atualizarSessao: injetarSessao,
         voltar: voltar,
-        base: base,
-        ADMIN_NOME: ADMIN_NOME,
-        ADMIN_EMAIL: ADMIN_EMAIL,
-        ADMIN_SENHA: ADMIN_SENHA
+        base: base
     };
 }());

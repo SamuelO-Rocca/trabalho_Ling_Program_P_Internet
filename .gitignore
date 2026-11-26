@@ -1,4 +1,11 @@
-RELATORIO.md
+.env
+desktop.ini
+*.docx
+
 *.md
+!README.md
+RELATORIO*.md
+GUIA_APRESENTACAO.md
+
 *.png
-Relatorio_ABNT.docx
+evidencia-*.png

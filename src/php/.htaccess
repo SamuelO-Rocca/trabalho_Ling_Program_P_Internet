@@ -1,0 +1,19 @@
+<FilesMatch "^\.env">
+    Require all denied
+</FilesMatch>
+
+<Files "config.php">
+    Require all denied
+</Files>
+
+<Files "conexao.php">
+    Require all denied
+</Files>
+
+<Files "auth.php">
+    Require all denied
+</Files>
+
+<Files "teste_conexao.php">
+    Require all denied
+</Files>
