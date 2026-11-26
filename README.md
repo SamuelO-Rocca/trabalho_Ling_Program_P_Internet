@@ -45,6 +45,8 @@ ProvaN1/
 ├── .env.example              modelo das credenciais (copie para .env nesta raiz)
 ├── router.php                router do servidor embutido (php -S ... router.php)
 ├── index.html                redireciona para src/ se a raiz for servida por engano
+```
+ProvaN1/
 ├── src/                      aplicação (versão implantada)
 │   ├── index.html / admin.html / login.html   páginas inicial, painel e login do usuário
 │   ├── www/                  formulários (usuário, livro, autor, categoria, empréstimo)
@@ -61,6 +63,8 @@ está preservada em `legacy/`; relatórios, guias e evidências estão em
 `docs/` (com imagens e trabalhos em `docs/evidencias/`). Se a raiz for
 servida por engano, o `index.html` dela redireciona para `src/` (DocumentRoot
 correto). O `.env` fica na raiz do projeto, fora de `src/`.
+servida por engano, o `.htaccess` dela bloqueia `legacy/`, `docs/`, `sql/`
+e o `src/php/.env`.
 
 ## Segurança
 
@@ -155,6 +159,31 @@ Se quiser 403 explícito ao acessar `.env`, `config.php`, `conexao.php`,
 no `httpd.conf` para o diretório do projeto e **descomente** as regras nos
 `.htaccess` (raiz, `src/`, `src/php/`). Com AllowOverride restrito, deixe
 comentado — o projeto funciona do mesmo jeito.
+
+### Rodar com XAMPP (mesmo banco PostgreSQL do phpPgAdmin)
+
+O XAMPP fornece o Apache; o banco continua sendo o PostgreSQL que o phpPgAdmin
+administra (`biblioteca`, porta 5433). O MariaDB do XAMPP **não** é usado.
+
+1. Copie a pasta `ProvaN1` inteira para a raiz do Apache do XAMPP:
+   - Windows: `C:\xampp\htdocs\ProvaN1\`
+   - Linux: `/opt/lampp/htdocs/ProvaN1/`
+2. Garanta que o PostgreSQL esteja no ar (o mesmo serviço que o phpPgAdmin usa)
+   e que `src/php/.env` aponte para ele (`DB_HOST`, `DB_PORT=5433`,
+   `DB_NAME=biblioteca`, `DB_USER`, `DB_PASS`).
+3. Habilite o `mod_headers` e `mod_rewrite` no Apache do XAMPP (botão
+   `Config` → `httpd.conf`): descomente
+   `LoadModule headers_module modules/mod_headers.so` e
+   `LoadModule rewrite_module modules/mod_rewrite.so`, e permita
+   `AllowOverride All` no diretório `htdocs`.
+4. Importe o schema uma única vez (se o banco ainda não existir):
+   crie o banco `biblioteca` no phpPgAdmin e rode o conteúdo de `sql/schema.sql`.
+5. Inicie o Apache pelo painel do XAMPP e acesse:
+   `http://localhost/ProvaN1/src/index.html` (painel admin: `admin.html`).
+
+Atenção: o servidor embutido `php -S` **não** lê `.htaccess` e expõe o
+`src/php/.env` na rede local — para visualizar o projeto, prefira sempre o
+Apache do XAMPP.
 
 Para gerar um hash de senha para o `.env`:
 
