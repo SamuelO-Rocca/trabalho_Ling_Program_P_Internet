@@ -99,8 +99,16 @@
         });
     }
 
+    function entrarUsuario(nome, email) {
+        salvarJson(sessionStorage, CHAVE_SESSAO, {
+            tipo: 'usuario',
+            nome: nome,
+            email: email
+        });
+    }
+
     function encerrarSessaoServidor() {
-        if (!ehAdmin()) {
+        if (!temSessao()) {
             return Promise.resolve();
         }
         var url = (base ? base + '/' : '') + 'php/logout.php';
@@ -236,25 +244,6 @@
         form.parentNode.insertBefore(aviso, form);
     }
 
-    function interceptarCadastroUsuario() {
-        var form = document.querySelector('form[action$="usuario.php"]');
-        if (!form || form.getAttribute('data-tpi2-conta')) {
-            return;
-        }
-        form.setAttribute('data-tpi2-conta', 'sim');
-        form.addEventListener('submit', function () {
-            var nome = form.querySelector('#nome');
-            var email = form.querySelector('#email');
-            if (nome && email && nome.value.trim() && email.value.trim()) {
-                salvarJson(sessionStorage, CHAVE_SESSAO, {
-                    tipo: 'usuario',
-                    nome: nome.value.trim(),
-                    email: email.value.trim().toLowerCase()
-                });
-            }
-        });
-    }
-
     function exigirConta(form) {
         if (form.id !== 'formEmprestimo' || temSessao()) {
             return false;
@@ -332,7 +321,6 @@
         injetarVoltar();
         injetarSessao();
         injetarAvisoEmprestimo();
-        interceptarCadastroUsuario();
 
         var form = config.formId ? document.getElementById(config.formId) : null;
         if (!form) {
@@ -371,6 +359,7 @@
         sessaoAtual: sessaoAtual,
         ehAdmin: ehAdmin,
         entrarAdmin: entrarAdmin,
+        entrarUsuario: entrarUsuario,
         sair: sair,
         encerrarSessaoServidor: encerrarSessaoServidor,
         atualizarSessao: injetarSessao,

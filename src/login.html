@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; form-action 'self'; base-uri 'self'">
+    <meta name="description" content="Login de usuário da Biblioteca Virtual">
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link rel="stylesheet" href="css/estilo.css" data-tpi2="estilo">
+    <title>Entrar | Biblioteca Virtual</title>
+</head>
+<body>
+
+    <nav class="menu-principal" aria-label="Menu principal">
+        <a href="index.html">Início</a>
+        <a href="admin.html">Painel Administrativo</a>
+        <a href="login.html">Entrar</a>
+        <a href="www/usuario.html">Usuários</a>
+        <a href="www/livro.html">Livros</a>
+        <a href="www/autor.html">Autores</a>
+        <a href="www/emprestimo.html">Empréstimos</a>
+        <a href="www/categoria.html">Categorias</a>
+    </nav>
+
+    <h1>Entrar</h1>
+
+    <main class="card">
+
+        <h2>Acesso do usuário</h2>
+
+        <form id="formLoginUsuario">
+
+            <p>
+                <label for="emailLogin">E-mail:</label>
+                <input type="email" id="emailLogin" name="email" autocomplete="username" placeholder="Seu e-mail cadastrado" required>
+            </p>
+
+            <p>
+                <label for="senhaLogin">Senha:</label>
+                <input type="password" id="senhaLogin" name="senha" autocomplete="current-password" placeholder="Sua senha de acesso" required>
+            </p>
+
+            <p class="tpi2-acoes">
+                <button type="submit" id="btnEntrarUsuario">Entrar</button>
+                <button type="button" id="btnVoltarLogin">Voltar</button>
+            </p>
+
+        </form>
+
+        <p>
+            Ainda não tem cadastro?
+            <a href="www/usuario.html">Cadastre-se</a>.
+        </p>
+
+    </main>
+
+    <script src="js/tpi2-ui.js" defer></script>
+    <script src="js/login.js" defer></script>
+
+</body>
+
+</html>
